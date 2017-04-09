@@ -4,7 +4,7 @@
   "description": "Functional library full of utilities",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/carlosvpi/futl/issues"
   },
-  "homepage": "https://github.com/carlosvpi/futl#readme"
+  "homepage": "https://github.com/carlosvpi/futl#readme",
+  "devDependencies": {
+    "jasmine": "^2.5.3"
+  }
 }

@@ -42,9 +42,13 @@ function _sort(f, lst) {
 }
 
 
-module.exports = function sort(f) {
+module.exports = function sort(f, lst) {
     if (f.constructor === functionConstructor) {
-        return _sort.bind(this, f);
+        if (lst !== undefined) {
+            return _sort(f, lst);
+        } else {
+            return _sort.bind(this, f);
+        }
     } else {
         return _sort(ord, f);
     }
