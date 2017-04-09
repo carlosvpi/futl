@@ -1,0 +1,159 @@
+<script>
+    var type = {
+        objectConstructor: ({}).constructor,
+        arrayConstructor: ([]).constructor,
+        numberConstructor: (0).constructor,
+        functionConstructor: (function(){}).constructor
+    };
+
+    function _nth(n, lst) {
+        return lst[n];
+    }
+
+    nth = curry2.bind(this, _nth);
+
+    function curry2(f, a, b) {
+        if (b === undefined) {
+            return f.bind(this, a);
+        }
+        return f(a, b);
+    };
+
+    function curry3(f, a, b, c) {
+        if (b === undefined) {
+            return f.bind(this, a);
+        }
+        if (c === undefined) {
+            return f.bind(this, a, b);
+        }
+        return f(a, b, c);
+    };
+
+    function compose() {
+        var fs = arguments;
+
+        return function(v) {
+            for (var i = fs.length-1; i >= 0; i--) {
+                v = fs[i](v);
+            }
+            return v;
+        };
+    }
+
+    function *_iMap(f, iter) {
+        var e = iter.next();
+        while(!e.done) {
+            yield f(e.value);
+            e = iter.next();
+        }
+    }
+
+    var iMap = curry2.bind(this, _iMap);
+
+    function *_iTake(n, iter) {
+        debugger;
+        var e = iter.next();
+        while(!e.done && n--) {
+            yield e.value;
+            e = iter.next();
+        }
+    }
+
+    iTake = curry2.bind(this, _iTake);
+
+    var always = function() { return true; }
+    var eq = function(a, b) { return a === b; };
+    var functionConstructor = type.functionConstructor;
+
+    function *iGen(f, cond, start) {
+        var e = f(start);
+        if (cond === undefined) {
+            cond = function() { return true; };
+        } else if (cond.constructor !== functionConstructor) {
+            cond = eq.bind(this, cond);
+        }
+        while(cond(e)) {
+            yield e;
+            e = f(e);
+        }
+    }
+
+    function iterToArray(iter) {
+        var e = iter.next(),
+            r = [];
+        while(!e.done) {
+            r.push(e.value);
+            e = iter.next();
+        }
+        return r;
+    }
+
+    function _C(f, x, y) { return f(y, x); }
+    var C = curry3(_C);
+
+    var even = function(e) {
+        return e % 2 === 0;
+    };
+    var fiboGen = function(p) {
+        return p === undefined ? [1, 1] : [p[1], p[0] + p[1]];
+    };
+    // var fibo = compose(iMap(nth(0)), iGen)(fiboGen);
+    // var nFibo = C(iTake, fibo);
+    function _iRepeat(f, n, iter) {
+        var e = iter.next(),
+            i = 0;
+        while(!e.done && i < n) {
+            f(e.value);
+            e = iter.next();
+            i++;
+        }
+        return i;
+    }
+
+    var lt = function(a, b) { return b < a; };
+
+    var iRepeat = curry3.bind(this, _iRepeat);
+
+    var fibo = iMap(nth(0), iGen(fiboGen));
+
+    var it = iMap(nth(0), iGen(fiboGen));
+
+    var f = n => iRepeat(console.log, n, it);
+    // f(100);
+
+    var comp = n => compose(iRepeat(console.log, n), iMap(nth(0)), iGen)
+    var hundredTimes = comp(100)
+    // console.log(hundredTimes(fiboGen))
+
+
+    function *_iAppend() {
+        var le = arguments.length - 1,
+            currentArg = arguments[le];
+            e = currentArg.next();
+        while(!e.done) {
+            yield e.value;
+            e = currentArg.next();
+        }
+
+        for (var i = 0; i < le; i++) {
+            currentArg = arguments[i];
+            e = currentArg.next();
+            while(!e.done) {
+                yield e.value;
+                e = currentArg.next();
+            }
+        }
+    }
+
+    function *iAppend() {
+        for (var i = 0, le = arguments.length, f = _iAppend; i < le; i++) {
+            f = f.bind(this, arguments);
+        }
+        return f;
+    };
+
+    function inc(x) { return x ? x + 1 : 1; }
+
+    console.log(iterToArray(iAppend(iGen(inc, 10), iGen(inc, 4))(iGen(inc, 2))));
+
+</script>
