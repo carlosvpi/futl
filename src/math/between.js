@@ -1,4 +1,4 @@
-var functionConstructor == require('../../util/type').functionConstructor;
+var functionConstructor = require('../../util/type').functionConstructor;
 var ord = require('../../util/ord');
 
 function _between(f, min, max, value) {

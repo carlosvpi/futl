@@ -9,11 +9,12 @@ function objOrd(a, b) {
 
 describe('Sort', function() {
   it('sorts an array of numbers', function() {
-    expect(sort([4,5,2,3])).toEqual([2,3,4,5]);
+    expect(sort([4, 5, 2, 3])).toEqual([2, 3, 4, 5]);
   });
   it('sorts an array of objects', function() {
-  	var list = [{value:3},{value:2},{value:1}];
+  	var list = [{value: 3}, {value: 2}, {value: 1}];
   	var sorted = sort(objOrd, list);
+
     expect(isSorted(objOrd, sorted)).toBe(true);
     expect(sorted.length).toBe(list.length);
     expect(reduce((acc, v) => {
@@ -23,4 +24,4 @@ describe('Sort', function() {
     	return acc && contains(v, sorted);
     }, true, list)).toBe(true);
   });
-})
+});
