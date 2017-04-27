@@ -1,28 +1,41 @@
-var Either,
-    rightProto = {
-        bind: function bind(f)      { return f(this._right); },
-        isLeft: function isLeft()   { return false; },
-        isRight: function isLeft()  { return true; },
-        fmap: function fmap(f)      { return Either(this._left, f(this._right)); },
-        ap: function ap(m)          { return m.fmap(this._right); }
+const curry2 = require('../../util/curry2');
+const eitherProto = {
+    chain: function chain(f) {
+        return this.isLeft() ? this : f(this._value);
     },
-    leftProto = {
-        bind: function bind()       { return this; },
-        isLeft: function isLeft()   { return true; },
-        isRight: function isLeft()  { return false; },
-        fmap: function fmap(f)      { return Either(this._left, f(this._right)); }
-    };
-
-Either = function(left, right) {
-    var either = {
-        _left: left,
-        _right: right
-    };
-    either.__proto__ = (right === undefined || right === null) ? leftProto : rightProto;
-    return either;
+    map: function map(f) {
+        return this.isLeft() ? this : Either(this._isLeft, f(this._value));
+    },
+    ap: function ap(v) {
+        return this.isLeft() ? this : v.map(this._value);
+    },
+    join: function join() {
+        return this._value;
+    },
+    getOrElse: function getOrElse(d) {
+        return this.isLeft() ? d : this._value;
+    },
+    isLeft: function isLeft() {
+        return this._isLeft;
+    },
+    isRight: function isRight() {
+        return !this._isLeft;
+    }
 };
 
-module.exports = {
-    Either: Either,
-    Left: Either(undefined)
+function Either(_isLeft, _value) {
+    const monad = { _value, _isLeft };
+    monad.__proto__ = eitherProto;
+    return monad;
 };
+
+Either.chain = curry2.bind(this, (f, m) => eitherProto.chain.call(m, f))
+Either.map = curry2.bind(this, (f, m) => eitherProto.map.call(m, f))
+Either.ap = curry2.bind(this, (v, m) => eitherProto.ap.call(m, v))
+Either.join = m => eitherProto.join.call(m)
+Either.getOrElse = curry2.bind(this, (d, m) => eitherProto.getOrElse.call(m, d))
+Either.isLeft = m => eitherProto.isLeft.call(m)
+Either.isRight = m => eitherProto.isRight.call(m)
+Either.proto = eitherProto;
+
+module.exports = Either;

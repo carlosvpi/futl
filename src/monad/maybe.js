@@ -1,47 +1,37 @@
-function bind(f) {
-    if (this.isNone()) return this;
-    return f(this._value);
-}
-
-var unitProto = {
-    bind: bind,
-    flatMap: bind,
-    chain: bind,
+const curry2 = require('../../util/curry2');
+const maybeProto = {
+    chain: function chain(f) {
+        return this.isNone() ? this : f(this._value);
+    },
     map: function map(f) {
-        return unit(f(this.__value));
+        return this.isNone() ? this : Maybe(f(this._value));
     },
     ap: function ap(v) {
-        return v.map(this.__value);
+        return this.isNone() ? this : v.map(this._value);
+    },
+    join: function join() {
+        return this._value;
+    },
+    getOrElse: function getOrElse(d) {
+        return this.isNone() ? d : this._value;
+    },
+    isNone: function isNone() {
+        return this._value === undefined || this._value === null;
     }
 };
 
-var Maybe,
-    maybeProto = {
-        bind: bind,
-        chain: bind,
-        flatMap: bind,
-        isNone: function isNone() {
-            return this._value === undefined || this._value === null;
-        },
-        map: function fmap(f) {
-            if (this.isNone()) return this;
-            return Maybe(f(this._value));
-        },
-        join: function join() {
-            return this._value;
-        },
-        ap: function ap(m) {
-            return m.fmap(this._value);
-        }
-    };
-
-Maybe = function(value) {
-    var maybe = { _value: value };
-    maybe.__proto__ = maybeProto;
-    return maybe;
+function Maybe(_value) {
+    const monad = { _value };
+    monad.__proto__ = maybeProto;
+    return monad;
 };
 
-module.exports = {
-    Maybe: Maybe,
-    None: Maybe(undefined)
-};
+Maybe.chain = curry2.bind(this, (f, m) => maybeProto.chain.call(m, f))
+Maybe.map = curry2.bind(this, (f, m) => maybeProto.map.call(m, f))
+Maybe.ap = curry2.bind(this, (v, m) => maybeProto.ap.call(m, v))
+Maybe.join = m => maybeProto.join.call(m)
+Maybe.getOrElse = curry2.bind(this, (d, m) => maybeProto.getOrElse.call(m, d))
+Maybe.isNone = m => maybeProto.isNone.call(m)
+Maybe.proto = maybeProto;
+
+module.exports = Maybe;
