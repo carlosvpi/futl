@@ -1,1 +1,1 @@
-module.exports = require('../../util/curry2')(function(a, b) { return b < a; });
+module.exports = require('../../util/curry2')(function lq(a, b) { return b < a; });
