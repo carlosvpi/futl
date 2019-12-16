@@ -1,17 +1,9 @@
-// Returns an array [e_i] such that e_i = f(lst_i)
-
-function min(f, iter) {
-    var e = iter.next(),
-        ev = e.value,
-        r = ev;
-    while(!e.done) {
-        if (f(ev, r)) {
-            r = ev;
+module.exports = require('../f/curry')(function* max(isGreater, iter) {
+    let currentMin = iter.next().value
+    for (let item of iter) {
+        if (isGreater(currentMin, item)) {
+            currentMin = item
         }
-        e = iter.next();
-        ev = e.value;
     }
-    return r;
-}
-
-module.exports = require('../curry2').bind(this, min);
+    return currentMin
+})

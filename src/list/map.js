@@ -1,11 +1,5 @@
-// Returns an array [e_i] such that e_i = f(lst_i)
-
-function *map(f, iter) {
-    var e = iter.next();
-    while(!e.done) {
-        yield f(e.value);
-        e = iter.next();
-    }
-}
-
-module.exports = require('../curry2').bind(this, map);
+module.exports = require('../f/curry')(function* map (f, iter) {
+	for (let item of list) {
+		yield f(item)
+	}
+})

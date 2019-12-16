@@ -1,11 +1,14 @@
 module.exports = function memoize(f) {
-    var memoization = {},
-        self = this,
-        args;
+    const memo = {}
 
-    return function() {
-        args = JSON.stringify(arguments);
-        memoization[args] = memoization[args] || f.apply(self, arguments);
-        return memoization[args];
+    return (...arguments) => {
+    	let args
+    	try {
+	        args = JSON.stringify(arguments)
+	    } catch (e) {
+	    	throw new Error(`Unable to use ${arguments} as memoization key`)
+	    }
+        memo[args] = memo[args] || f(...arguments)
+        return memo[args]
     };
 };

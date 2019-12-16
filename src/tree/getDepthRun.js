@@ -1,8 +1,8 @@
-const getDepthRun = function getDepthRun ({ getRoot, getChildren }) {
+const getDepthRun = function getDepthRun ({ getChildren }) {
 	return function* getDepthRunFromTree (tree) {
 		const children = getChildren(tree)
 
-		yield getRoot(tree)
+		yield tree
 
 		for (let i = 0; i < children.length; i++) {
 			yield* getDepthRunFromTree(children[i])
@@ -10,7 +10,6 @@ const getDepthRun = function getDepthRun ({ getRoot, getChildren }) {
 	}
 }
 
-getDepthRun.getRoot = ([root]) => root
 getDepthRun.getChildren = ([_, ...children]) => children
 
 module.exports = getDepthRun

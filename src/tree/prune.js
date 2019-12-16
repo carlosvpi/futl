@@ -1,10 +1,10 @@
-const prune = function prune (p) {
-	return function pruneTree ({ getRoot, getChildren }) {
+const prune = function prune (predicate) {
+	return function pruneTree ({ getChildren, ...treeInterface }) {
 		return {
-			getRoot,
 			getChildren: (tree) => getChildren(tree).filter((child, i) => {
-				return !p(getRoot(child), child, i, tree)
-			})
+				return !predicate(child, i, tree)
+			}),
+			...treeInterface
 		}
 	}
 }

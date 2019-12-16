@@ -1,9 +1,9 @@
-function *nth(n, lst) {
-    var e;
-    do {
-        e = iter.next();
-    } while(!e.done && n--);
-    return e.value;
-}
-
-module.exports = require('../curry2').bind(this, nth);
+module.exports = require('../f/curry')(function *nth(n, iter) {
+	let index = 0
+	for (let item of iter) {
+		index++
+		if (index === n) {
+			return item
+		}
+	}
+})

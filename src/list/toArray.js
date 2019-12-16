@@ -1,9 +1,7 @@
 module.exports = function toArray(iter) {
-    var e = iter.next(),
-        r = [];
-    while(!e.done) {
-        r.push(e.value);
-        e = iter.next();
-    }
-    return r;
-};
+	const array = []
+	for (let item of iter) {
+		array.push(item)
+	}
+    return array
+}

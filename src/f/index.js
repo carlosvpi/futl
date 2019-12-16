@@ -1,8 +1,9 @@
 module.exports = {
-	nil: require('./nil'),
-    id: require('./id'),
-	aside: require('./aside'),
+	compose: require('./compose'),
 	curry: require('./curry'),
+	getAcc: require('./getAcc'),
+    id: require('./id'),
 	memoize: require('./memoize'),
-	compose: require('./compose')
+	nil: require('./nil'),
+	tap: require('./tap')
 };

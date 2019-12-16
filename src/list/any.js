@@ -1,15 +1,9 @@
-// Returns an array [e_i] such that e_i = f(lst_i)
-
-function any(p, iter) {
-    var e = iter.next(),
-        ev = e.value;
-    while(!e.done) {
-        if (p(ev)) {
-            return true;
-        }
-        e = iter.next();
+module.exports = require('../f/curry')(function all(predicate, iter) {
+	let index = 0
+    for (let item of iter) {
+    	if (predicate(item, index++, iter)) {
+    		return true
+    	}
     }
-    return false;
-}
-
-module.exports = require('../curry2').bind(this, any);
+    return false
+})

@@ -1,13 +1,13 @@
 var F = {};
 
 var modules = [require('./f'),
+    require('./array'),
     require('./lst'),
-    require('./math'),
+    require('./graph'),
+    require('./tree'),
     require('./obj'),
-    require('./cl'),
     require('./logic'),
-    require('./monad'),
-    require('./type')];
+    require('./stream')];
 
 for (var i = 0, le = modules.length, m; i < le; i++) {
     m = modules[i];

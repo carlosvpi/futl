@@ -1,10 +1,9 @@
-function* takeWhile(cond, iter) {
-    var e = iter.next();
-    var i = 0;
-    while(!e.done && cond(e, i++)) {
-        yield e.value;
-        e = iter.next();
-    }
-}
-
-module.exports = require('../../util/curry2').bind(this, takeWhile);
+module.exports = require('../f/curry')(function takeWhile(predicate, iter) {
+	let index = 0
+	for (let item of iter) {
+		if (!predicate(item, index++, iter)) {
+			return
+		}
+		yield item
+	}
+})

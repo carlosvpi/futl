@@ -1,18 +1,7 @@
-const getDepthLeaves = function getDepthLeaves ({ getRoot, getChildren }) {
-	return function* getDepthLeavesFromTree (tree) {
-		const children = getChildren(tree)
+const getDepthLeaves = require('./getDepthLeaves')
+const filter = require('../list/filter')
 
-		if (children.length === 0) {
-			yield getRoot(tree)
-		}
-
-		for (let i = 0; i < children.length; i++) {
-			yield* getDepthLeavesFromTree(children[i])
-		}
-	}
+module.exports = ({ getChildren }) => {
+	getDepthLeavesFromTree = getDepthLeaves({ getChildren })
+	return tree => filter(tree => getChildren(tree).length === 0)(getDepthLeavesFromTree(tree))
 }
-
-getDepthLeaves.getRoot = ([root]) => root
-getDepthLeaves.getChildren = ([_, ...children]) => children
-
-module.exports = getDepthLeaves

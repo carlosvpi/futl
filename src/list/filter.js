@@ -1,12 +1,8 @@
-function *filter(p, iter) {
-    var e = iter.next(),
-        ev = e.value;
-    while(!e.done) {
-        if (p(ev)) {
-            yield ev;
-        }
-        e = iter.next();
-    }
-}
-
-module.exports = require('../curry2').bind(this, filter);
+module.exports = require('../f/curry')(function *filter(predicate, iter) {
+	let index = 0
+	for (let item of iter) {
+		if (predicate(item, index++, iter)) {
+			yield item
+		}
+	}
+})
